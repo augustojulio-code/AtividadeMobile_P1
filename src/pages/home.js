@@ -18,6 +18,28 @@ export default function home() {
 
     }
 
+    function adicionarTarefa() {
+
+        if (titulo.trim() != '' || desc.trim() != '') {
+            const dados = {
+                id: String(new Date().getTime()),
+                titulo: titulo,
+                desc: desc
+            };
+
+            setlistatarefa((oldState) => [...oldState, dados]);
+            settitulo('');
+            setdesc('');
+            setvisivel02(false)
+        }
+        else {
+            alert('Digite uma Tarefa');
+            setvisivel02(false)
+        }
+
+
+    }
+
     let [listatarefa, setlistatarefa] = useState([
         {
             id: 0,
@@ -62,22 +84,25 @@ export default function home() {
                     <TextInput
                         placeholder='Titulo'
                         //editable={campoEdit}
-                        style={estilo.testo}>
+                        style={estilo.testo}
+                        onChangeText={settitulo}>
 
                     </TextInput>
 
                     <TextInput
                         placeholder='Nota'
                         //editable={campoEdit}
-                        style={estilo.testo}>
+                        style={estilo.testo}
+                        onChangeText={setdesc}>
 
                     </TextInput>
 
                     <View style={estilo.botaoview} >
 
                         <TouchableOpacity
-                            style={estilo.botao}                            >
-                            <Text style={estilo.testo}>+git pull</Text>
+                            style={estilo.botao}
+                            onPress={adicionarTarefa}                            >
+                            <Text style={estilo.testo}>+</Text>
 
                         </TouchableOpacity>
 
