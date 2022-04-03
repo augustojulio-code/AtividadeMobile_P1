@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { render } from 'react-dom';
 import { Text, StyleSheet, View, Modal, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function home() {
 
     const [visivel, setvisivel] = useState(false);
+    let [tarefaid, settarefaID] = useState(0);
     let [titulo, settitulo] = useState(0);
     let [desc, setdesc] = useState(0);
     const [campoEdit, setcampoEdit] = useState(false);
     const [visivel02, setvisivel02] = useState(false);
 
-    function rederizar(index, index2) {
+    function rederizar(index, index2, index3) {
 
+        settarefaID(index3);
         settitulo(index);
         setdesc(index2);
         setvisivel(true);
@@ -40,39 +43,33 @@ export default function home() {
 
     }
 
+    function deletarTarefa(itemid) {
+
+        console.log('id tarefa:' + itemid);
+
+        let novastarefas = [...listatarefa];
+
+        novastarefas = novastarefas.filter((it, i) => {
+            if (i != itemid) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+
+        setlistatarefa(novastarefas);
+
+    }
+
     let [listatarefa, setlistatarefa] = useState([
-        {
-            id: 0,
-            titulo: 'Despertador',
-            desc: 'Acordar cedo'
-        },
-        {
-            id: 1,
-            titulo: 'Teste2',
-            desc: 'descrição teste'
-        },
-        {
-            id: 2,
-            titulo: 'Teste333',
-            desc: 'descrição teste225'
-        },
-        {
-            id: 3,
-            titulo: 'Teste55847',
-            desc: 'descrição sjhdkjsahdkjsahd'
-        }
 
     ]);
 
     return (
         <View>
 
-            <Text>Hello Word</Text>
-            <TouchableOpacity
-                style={estilo.botao}
-                onPress={() => { setvisivel02(true) }}>
-                <Text style={estilo.testo}>+</Text>
-            </TouchableOpacity>
+            <Text style={estilo.tituloPrincipal}>ToDo List</Text>
 
             <Modal
                 animationType='slide'
@@ -125,9 +122,12 @@ export default function home() {
                 keyExtractor={(item) => item.id}
                 renderItem={(({ item }) =>
                     <View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', elevation: 15 }}>
 
-                            <Text onPress={() => rederizar(item.titulo, item.desc)}>{item.titulo}</Text>
+                            <Text onPress={() => rederizar(item.titulo, item.desc, item.id)}>{item.titulo}</Text>
+                            <TouchableOpacity onPress={() => deletarTarefa(item.id)}>
+                                <Ionicons name="md-checkmark-circle" size={30} color="green" />
+                            </TouchableOpacity>
 
                         </View>
 
@@ -137,11 +137,16 @@ export default function home() {
                             visible={visivel}>
 
                             <View style={estilo.modal}>
-                                <Text style={estilo.testo}> {titulo}</Text>
-                                <Text style={estilo.testo}>{desc}</Text>
 
                                 <TextInput
                                     placeholder={titulo}
+                                    editable={campoEdit}
+                                    style={estilo.testo}>
+
+                                </TextInput>
+
+                                <TextInput
+                                    placeholder={desc}
                                     editable={campoEdit}
                                     style={estilo.testo}>
 
@@ -152,14 +157,14 @@ export default function home() {
                                     <TouchableOpacity
                                         style={estilo.botao}
                                         onPress={() => { setcampoEdit(true) }}>
-                                        <Text style={estilo.testo}>Bo</Text>
+                                        <Text style={estilo.testo}>Edit</Text>
 
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
                                         style={estilo.botao}
                                         onPress={() => { setvisivel(false) }}>
-                                        <   Text style={estilo.testo}>Botão</Text>
+                                        <   Text style={estilo.testo}>Voltar</Text>
 
                                     </TouchableOpacity>
 
@@ -172,6 +177,17 @@ export default function home() {
 
                 )}
             ></FlatList>
+
+            <View style={estilo.rodape}>
+
+                <TouchableOpacity
+                    style={estilo.botao}
+                    onPress={() => { setvisivel02(true) }}>
+                    <Text style={estilo.testo}>+</Text>
+                </TouchableOpacity>
+
+            </View>
+
 
         </View>
 
@@ -209,10 +225,16 @@ const estilo = StyleSheet.create({
     botaoview: {
         alignItems: 'flex-end',
         flexDirection: 'row-reverse',
-
-
-
-
+    },
+    tituloPrincipal: {
+        padding: 15,
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
+    rodape: {
+        alignItems: 'left',
+        position: 'relative',
+        bottom: 0
 
     }
 
